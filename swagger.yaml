@@ -22,7 +22,9 @@ paths:
       tags:
       - 관리자 컨트롤러
       summary: "[관리자] 전체 질문 불러오기"
-      description: 질문, 질문 내용, 해당 문제에 대한 답변, 답변별 포지션들이 불러와집니다.
+      description: '전체 질문을 불러옵니다. <반환 값>: 질문고유번호(resultId), 질문내용(resultInfo), 해당 문제에
+        대한 답변들 List[ 답변고유번호(answerId), 답변내용(answerInfo), 답변별포지션번호(resultId), 포지션명(result)
+        ]들을 반환합니다.'
       operationId: getQuestions
       responses:
         '200':
@@ -35,7 +37,7 @@ paths:
       tags:
       - 관리자 컨트롤러
       summary: "[관리자] 질문지 수정"
-      description: 질문지를 수정할 수 있습니다.
+      description: 질문지를 수정할 수 있습니다. <요청 값>
       operationId: updateQuestion
       requestBody:
         content:
@@ -54,7 +56,8 @@ paths:
       tags:
       - 관리자 컨트롤러
       summary: "[관리자] 질문 생성"
-      description: 질문을 생성합니다. (최대 10개)
+      description: '질문을 생성합니다. (최대 10개) <요청 값>: 질문내용(questionInfo), 답변지들 List[ 답변내용(answer),
+        포지션고유번호(resultId) ]를 입력받습니다.'
       operationId: createQuestion
       requestBody:
         content:
@@ -108,14 +111,31 @@ paths:
       tags:
       - 방명록 컨트롤러
       summary: 방명록 전체 조회
-      description: 페이지네이션된 방명록 전체를 조회합니다.
+      description: 방명록 전체를 조회합니다. (페이지네이션)
       operationId: getAllGuestBooks
       parameters:
-      - name: pageable
+      - name: page
         in: query
-        required: true
+        description: 페이지 번호 (0부터 시작)
+        required: false
         schema:
-          "$ref": "#/components/schemas/Pageable"
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sort
+        in: query
+        description: '정렬 기준 (예: guestBookId,desc)'
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -180,7 +200,7 @@ paths:
       tags:
       - 관리자 컨트롤러
       summary: "[관리자] 로그인"
-      description: 관리자 로그인 기능입니다.
+      description: 관리자 로그인, Id와 PW를 입력받고 반환값은 null 입니다.
       operationId: login
       requestBody:
         content:
@@ -257,11 +277,28 @@ paths:
         required: true
         schema:
           type: string
-      - name: pageable
+      - name: page
         in: query
-        required: true
+        description: 페이지 번호 (0부터 시작)
+        required: false
         schema:
-          "$ref": "#/components/schemas/Pageable"
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sort
+        in: query
+        description: '정렬 기준 (예: guestBookId,desc)'
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -282,11 +319,28 @@ paths:
         required: true
         schema:
           type: string
-      - name: pageable
+      - name: page
         in: query
-        required: true
+        description: 페이지 번호 (0부터 시작)
+        required: false
         schema:
-          "$ref": "#/components/schemas/Pageable"
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sort
+        in: query
+        description: '정렬 기준 (예: guestBookId,desc)'
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -302,11 +356,28 @@ paths:
       description: 방명록 전체 조회 기능입니다.
       operationId: getGuestBooks
       parameters:
-      - name: pageable
+      - name: page
         in: query
-        required: true
+        description: 페이지 번호 (0부터 시작)
+        required: false
         schema:
-          "$ref": "#/components/schemas/Pageable"
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sort
+        in: query
+        description: '정렬 기준 (예: guestBookId,desc)'
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -387,7 +458,7 @@ paths:
       tags:
       - 관리자 컨트롤러
       summary: "[관리자] 로그아웃"
-      description: 로그아웃 및 세션을 삭제합니다.
+      description: 요청값은 없습니다. 로그아웃 및 세션을 삭제합니다.
       operationId: logout
       responses:
         '200':
@@ -424,22 +495,34 @@ components:
       properties:
         answerId:
           type: integer
+          description: 답변 고유 번호
           format: int64
+          example: 4
         answer:
           type: string
+          description: 답변 내용
+          example: 세터
         resultId:
           type: integer
+          description: 결과(포지션) 고유 번호
           format: int64
+          example: 3
+      description: 답변목록
     UpdateQuestionReq:
       type: object
       properties:
         questionId:
           type: integer
+          description: 질문 고유 번호
           format: int64
+          example: 1
         questionInfo:
           type: string
+          description: 질문 내용
+          example: 가장 싫어하는 포지션은?
         answers:
           type: array
+          description: 답변목록
           items:
             "$ref": "#/components/schemas/UpdateAnswerReq"
     ApiResponseObject:
@@ -491,13 +574,21 @@ components:
       properties:
         resultId:
           type: integer
+          description: 결과(포지션) 고유번호
           format: int64
+          example: 2
         result:
           type: string
+          description: 결과(포지션)명
+          example: CENTER
         resultModifier:
           type: string
+          description: 결과(포지션) 수식어
+          example: 철벽과 빠른 공격
         resultInfo:
           type: string
+          description: 결과(포지션) 설명
+          example: 미들블로커라고도 불리는 센터는 ~~
         resultStatus:
           type: object
           additionalProperties:
@@ -520,11 +611,16 @@ components:
         guestBookNickname:
           pattern: "^(?!.*[\\u3131-\\u318E])^[a-zA-Z0-9]+$"
           type: string
+          description: 닉네임(익명ID)
+          example: 개구리123
         guestBookPassword:
-          pattern: "^(?!.*[\\u3131-\\u318E])^[a-zA-Z0-9]+$"
           type: string
+          description: 비밀번호
+          example: 123512dldl
         guestBookInfo:
           type: string
+          description: 방명록 내용
+          example: 다들 화이팅!!
     ApiResponseLong:
       type: object
       properties:
@@ -540,25 +636,39 @@ components:
       properties:
         result:
           type: string
+          description: 결과명(포지션명)
+          example: LEFT
         resultModifier:
           type: string
+          description: 결과(포지션) 수식어
+          example: 폭발적인 에너지
         resultInfo:
           type: string
+          description: 결과(포지션) 설명
+          example: 해당 포지션은 공격을 위주로 하는 어쩌구~~
     AnswerReq:
       type: object
       properties:
         answer:
           type: string
+          description: 답변 내용
+          example: 레프트
         resultId:
           type: integer
+          description: 결과(포지션) 고유 번호
           format: int64
+          example: 1
+      description: 답변목록
     CreateQuestionReq:
       type: object
       properties:
         questionInfo:
           type: string
+          description: 질문 내용
+          example: 가장 좋아하는 포지션은?
         answers:
           type: array
+          description: 답변목록
           items:
             "$ref": "#/components/schemas/AnswerReq"
     AdminLoginReq:
@@ -566,8 +676,12 @@ components:
       properties:
         id:
           type: string
+          description: 관리자 ID
+          example: admin
         password:
           type: string
+          description: 관리자 PW
+          example: password312
     ApiResponseListResultRes:
       type: object
       properties:
@@ -584,13 +698,21 @@ components:
       properties:
         resultId:
           type: integer
+          description: 결과(포지션) 고유번호
           format: int64
+          example: 3
         result:
           type: string
+          description: 결과(포지션)명
+          example: LEFT
         resultModifier:
           type: string
+          description: 결과(포지션) 수식어
+          example: 폭발적인 공격수
         resultInfo:
           type: string
+          description: 결과(포지션) 설명
+          example: 폭발적인 에너지로 팀의 에이스 ~~~
     ApiResponseResultRes:
       type: object
       properties:
@@ -605,14 +727,23 @@ components:
       properties:
         answerId:
           type: integer
+          description: 답변 고유번호
           format: int64
+          example: 4
         answer:
           type: string
+          description: 답변 내용
+          example: 침대에 누워있을 때
         resultId:
           type: integer
+          description: 결과(포지션) 고유번호
           format: int64
+          example: 2
         result:
           type: string
+          description: 결과(포지션)명
+          example: LIBERO
+      description: 답변목록
     ApiResponseListQuestionWithAnswersRes:
       type: object
       properties:
@@ -629,28 +760,18 @@ components:
       properties:
         questionId:
           type: integer
+          description: 질문 고유번호
           format: int64
+          example: 1
         questionInfo:
           type: string
+          description: 질문 내용
+          example: 나는 언제 가장 행복한가?
         answers:
           type: array
+          description: 답변목록
           items:
             "$ref": "#/components/schemas/AnswerRes"
-    Pageable:
-      type: object
-      properties:
-        page:
-          minimum: 0
-          type: integer
-          format: int32
-        size:
-          minimum: 1
-          type: integer
-          format: int32
-        sort:
-          type: array
-          items:
-            type: string
     ApiResponsePageGuestBookRes:
       type: object
       properties:
@@ -665,21 +786,37 @@ components:
       properties:
         guestBookId:
           type: integer
+          description: 방명록 고유번호
           format: int64
+          example: 2
         guestBookNickname:
           type: string
+          description: 방명록 닉네임
+          example: 개구리
         guestBookInfo:
           type: string
+          description: 방명록 내용
+          example: 어디에나 있고, 어디에나 없는 채류니
         createdAt:
           type: string
+          description: 작성시간
           format: date-time
     PageGuestBookRes:
       type: object
       properties:
+        totalPages:
+          type: integer
+          format: int32
         totalElements:
           type: integer
           format: int64
-        totalPages:
+        first:
+          type: boolean
+        last:
+          type: boolean
+        pageable:
+          "$ref": "#/components/schemas/PageableObject"
+        numberOfElements:
           type: integer
           format: int32
         size:
@@ -694,41 +831,32 @@ components:
           format: int32
         sort:
           "$ref": "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          "$ref": "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
+        paged:
+          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
         offset:
           type: integer
           format: int64
         sort:
           "$ref": "#/components/schemas/SortObject"
-        paged:
-          type: boolean
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
         unpaged:
           type: boolean
     SortObject:
       type: object
       properties:
-        empty:
-          type: boolean
         sorted:
+          type: boolean
+        empty:
           type: boolean
         unsorted:
           type: boolean
@@ -746,7 +874,9 @@ components:
       properties:
         total:
           type: integer
+          description: 테스트를 한 모든 인원
           format: int32
+          example: 128
         resultStatus:
           type: object
           additionalProperties:
