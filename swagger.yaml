@@ -469,7 +469,14 @@ components:
           type: object
           additionalProperties:
             type: integer
+            description: '포지션별 answer 선택 갯수 (예: LEFT, SETTER, CENTER, LIBERO'
             format: int32
+          description: '포지션별 answer 선택 갯수 (예: LEFT, SETTER, CENTER, LIBERO'
+          example:
+            LEFT: 2
+            SETTER: 1
+            CENTER: 3
+            LIBERO: 4
     ApiResponseMyResultRes:
       type: object
       properties:
@@ -495,7 +502,14 @@ components:
           type: object
           additionalProperties:
             type: integer
+            description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
             format: int32
+          description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
+          example:
+            LEFT: 25
+            SETTER: 25
+            CENTER: 50
+            LIBERO: 0
     CreateGuestBookReq:
       required:
       - guestBookInfo
@@ -662,12 +676,12 @@ components:
     PageGuestBookRes:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -699,14 +713,14 @@ components:
           format: int64
         sort:
           "$ref": "#/components/schemas/SortObject"
-        pageNumber:
-          type: integer
-          format: int32
+        paged:
+          type: boolean
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
         unpaged:
           type: boolean
     SortObject:
@@ -737,4 +751,11 @@ components:
           type: object
           additionalProperties:
             type: integer
+            description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
             format: int32
+          description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
+          example:
+            LEFT: 25
+            SETTER: 25
+            CENTER: 50
+            LIBERO: 0
