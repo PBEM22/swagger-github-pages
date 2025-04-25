@@ -5,7 +5,7 @@ info:
   description: 배구 포지션 테스트 api명세서입니다.
   version: v1
 servers:
-- url: http://localhost:8080
+- url: https://nvp.kr
   description: Generated server url
 tags:
 - name: 질문지 컨트롤러
@@ -114,35 +114,28 @@ paths:
       description: 방명록 전체를 조회합니다. (페이지네이션)
       operationId: getAllGuestBooks
       parameters:
-      - name: page
+      - name: cursor
         in: query
-        description: 페이지 번호 (0부터 시작)
+        description: 마지막 Id, 없으면 처음부터 가져옴
         required: false
         schema:
           type: integer
-          format: int32
-          default: 0
-      - name: size
+          format: int64
+      - name: limit
         in: query
-        description: 페이지 크기
+        description: 가져올 크기
         required: false
         schema:
           type: integer
           format: int32
           default: 10
-      - name: sort
-        in: query
-        description: '정렬 기준 (예: guestBookId,desc)'
-        required: false
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             "*/*":
               schema:
-                "$ref": "#/components/schemas/ApiResponsePageGuestBookRes"
+                "$ref": "#/components/schemas/ApiResponseListGuestBookRes"
     post:
       tags:
       - 방명록 컨트롤러
@@ -162,39 +155,6 @@ paths:
             "*/*":
               schema:
                 "$ref": "#/components/schemas/ApiResponseLong"
-  "/v1/admins/results":
-    get:
-      tags:
-      - 관리자 컨트롤러
-      summary: "[관리자] 전체 결과 확인하기"
-      description: 지금껏 실행되었던 전체 결과들 확인이 가능합니다.
-      operationId: getResults
-      responses:
-        '200':
-          description: OK
-          content:
-            "*/*":
-              schema:
-                "$ref": "#/components/schemas/ApiResponseResultStatusAllRes"
-    post:
-      tags:
-      - 관리자 컨트롤러
-      summary: "[관리자] 결과(포지션) 추가"
-      description: 새로운 결과(포지션)를 추가할 수 있습니다. (거의 안쓸듯)
-      operationId: postResult
-      requestBody:
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateResultReq"
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            "*/*":
-              schema:
-                "$ref": "#/components/schemas/ApiResponseObject"
   "/v1/admins/login":
     post:
       tags:
@@ -221,7 +181,7 @@ paths:
       - 결과값(포지션) 컨트롤러
       summary: 결과 전체 조회
       description: 어떤 결과(포지션)들이 있는지 전체 조회할 수 있습니다.
-      operationId: getResults_1
+      operationId: getResults
       responses:
         '200':
           description: OK
@@ -277,35 +237,28 @@ paths:
         required: true
         schema:
           type: string
-      - name: page
+      - name: cursor
         in: query
-        description: 페이지 번호 (0부터 시작)
+        description: 마지막 Id, 없으면 처음부터 가져옴
         required: false
         schema:
           type: integer
-          format: int32
-          default: 0
-      - name: size
+          format: int64
+      - name: limit
         in: query
-        description: 페이지 크기
+        description: 가져올 크기
         required: false
         schema:
           type: integer
           format: int32
           default: 10
-      - name: sort
-        in: query
-        description: '정렬 기준 (예: guestBookId,desc)'
-        required: false
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             "*/*":
               schema:
-                "$ref": "#/components/schemas/ApiResponsePageGuestBookRes"
+                "$ref": "#/components/schemas/ApiResponseListGuestBookRes"
   "/v1/admins/search":
     get:
       tags:
@@ -319,35 +272,42 @@ paths:
         required: true
         schema:
           type: string
-      - name: page
+      - name: cursor
         in: query
-        description: 페이지 번호 (0부터 시작)
+        description: 마지막 ID, 없으면 처음부터 가져옴
         required: false
         schema:
           type: integer
-          format: int32
-          default: 0
-      - name: size
+          format: int64
+      - name: limit
         in: query
-        description: 페이지 크기
+        description: 가져올 크기
         required: false
         schema:
           type: integer
           format: int32
           default: 10
-      - name: sort
-        in: query
-        description: '정렬 기준 (예: guestBookId,desc)'
-        required: false
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             "*/*":
               schema:
-                "$ref": "#/components/schemas/ApiResponsePageGuestBookRes"
+                "$ref": "#/components/schemas/ApiResponseListGuestBookRes"
+  "/v1/admins/results":
+    get:
+      tags:
+      - 관리자 컨트롤러
+      summary: "[관리자] 전체 결과 확인하기"
+      description: 지금껏 실행되었던 전체 결과들 확인이 가능합니다.
+      operationId: getResults_1
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/ApiResponseResultStatusAllRes"
   "/v1/admins/guestbooks":
     get:
       tags:
@@ -356,35 +316,28 @@ paths:
       description: 방명록 전체 조회 기능입니다.
       operationId: getGuestBooks
       parameters:
-      - name: page
+      - name: cursor
         in: query
-        description: 페이지 번호 (0부터 시작)
+        description: 마지막 ID, 없으면 처음부터 가져옴
         required: false
         schema:
           type: integer
-          format: int32
-          default: 0
-      - name: size
+          format: int64
+      - name: limit
         in: query
-        description: 페이지 크기
+        description: 가져올 크기
         required: false
         schema:
           type: integer
           format: int32
           default: 10
-      - name: sort
-        in: query
-        description: '정렬 기준 (예: guestBookId,desc)'
-        required: false
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             "*/*":
               schema:
-                "$ref": "#/components/schemas/ApiResponseObject"
+                "$ref": "#/components/schemas/ApiResponseListGuestBookRes"
   "/v1/questbooks/{guestBookId}":
     delete:
       tags:
@@ -404,27 +357,6 @@ paths:
         required: true
         schema:
           type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            "*/*":
-              schema:
-                "$ref": "#/components/schemas/ApiResponseObject"
-  "/v1/admins/results/{id}":
-    delete:
-      tags:
-      - 관리자 컨트롤러
-      summary: "[관리자] 결과(포지션) 삭제"
-      description: 결과(포지션)를 삭제할 수 있습니다.
-      operationId: deleteResult
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
       responses:
         '200':
           description: OK
@@ -581,6 +513,10 @@ components:
           type: string
           description: 결과(포지션)명
           example: CENTER
+        resultKo:
+          type: string
+          description: 결과(포지션)명 한글
+          example: 센터
         resultModifier:
           type: string
           description: 결과(포지션) 수식어
@@ -590,34 +526,62 @@ components:
           description: 결과(포지션) 설명
           example: 미들블로커라고도 불리는 센터는 ~~
         resultStatus:
-          type: object
-          additionalProperties:
-            type: integer
-            description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
-            format: int32
-          description: '포지션별 [count / 전체] 퍼센테이지(%) (예: LEFT, SETTER, CENTER, LIBERO'
+          type: array
+          description: 포지션별 [count / 전체] 퍼센테이지(%) 결과 리스트. 각 항목은 포지션명, 한글명, 비율을 포함합니다.
           example:
-            LEFT: 25
-            SETTER: 25
-            CENTER: 50
-            LIBERO: 0
+          - resultStatusId: 1
+            resultStatusName: LEFT
+            resultStatusKo: 레프트
+            resultStatusPer: 25
+          - resultStatusId: 2
+            resultStatusName: SETTER
+            resultStatusKo: 세터
+            resultStatusPer: 25
+          items:
+            "$ref": "#/components/schemas/ResultStatusRes"
+    ResultStatusRes:
+      type: object
+      properties:
+        resultStatusId:
+          type: integer
+          description: 결과(포지션) 고유번호
+          format: int64
+          example: 3
+        resultStatusName:
+          type: string
+          description: 결과(포지션)명
+          example: LEFT
+        resultStatusKo:
+          type: string
+          description: 결과(포지션)명 한글
+          example: 레프트
+        resultStatusPer:
+          type: integer
+          description: 결과(포지션)별 비율 (count / 전체, 정수) %
+          format: int32
+          example: 37
     CreateGuestBookReq:
       required:
       - guestBookInfo
-      - guestBookNickname
       - guestBookPassword
       type: object
       properties:
         guestBookNickname:
+          maxLength: 10
+          minLength: 0
           pattern: "^(?!.*[\\u3131-\\u318E])^[a-zA-Z0-9]+$"
           type: string
           description: 닉네임(익명ID)
           example: 개구리123
         guestBookPassword:
+          maxLength: 8
+          minLength: 4
           type: string
           description: 비밀번호
-          example: 123512dldl
+          example: '123512'
         guestBookInfo:
+          maxLength: 70
+          minLength: 4
           type: string
           description: 방명록 내용
           example: 다들 화이팅!!
@@ -631,21 +595,6 @@ components:
           format: int64
         error:
           "$ref": "#/components/schemas/ExceptionDTO"
-    CreateResultReq:
-      type: object
-      properties:
-        result:
-          type: string
-          description: 결과명(포지션명)
-          example: LEFT
-        resultModifier:
-          type: string
-          description: 결과(포지션) 수식어
-          example: 폭발적인 에너지
-        resultInfo:
-          type: string
-          description: 결과(포지션) 설명
-          example: 해당 포지션은 공격을 위주로 하는 어쩌구~~
     AnswerReq:
       type: object
       properties:
@@ -705,6 +654,10 @@ components:
           type: string
           description: 결과(포지션)명
           example: LEFT
+        resultKo:
+          type: string
+          description: 결과(포지션)명 한글
+          example: 레프트
         resultModifier:
           type: string
           description: 결과(포지션) 수식어
@@ -772,13 +725,15 @@ components:
           description: 답변목록
           items:
             "$ref": "#/components/schemas/AnswerRes"
-    ApiResponsePageGuestBookRes:
+    ApiResponseListGuestBookRes:
       type: object
       properties:
         success:
           type: boolean
         data:
-          "$ref": "#/components/schemas/PageGuestBookRes"
+          type: array
+          items:
+            "$ref": "#/components/schemas/GuestBookRes"
         error:
           "$ref": "#/components/schemas/ExceptionDTO"
     GuestBookRes:
@@ -801,65 +756,6 @@ components:
           type: string
           description: 작성시간
           format: date-time
-    PageGuestBookRes:
-      type: object
-      properties:
-        totalPages:
-          type: integer
-          format: int32
-        totalElements:
-          type: integer
-          format: int64
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageable:
-          "$ref": "#/components/schemas/PageableObject"
-        numberOfElements:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        content:
-          type: array
-          items:
-            "$ref": "#/components/schemas/GuestBookRes"
-        number:
-          type: integer
-          format: int32
-        sort:
-          "$ref": "#/components/schemas/SortObject"
-        empty:
-          type: boolean
-    PageableObject:
-      type: object
-      properties:
-        paged:
-          type: boolean
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-        offset:
-          type: integer
-          format: int64
-        sort:
-          "$ref": "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
-    SortObject:
-      type: object
-      properties:
-        sorted:
-          type: boolean
-        empty:
-          type: boolean
-        unsorted:
-          type: boolean
     ApiResponseResultStatusAllRes:
       type: object
       properties:
