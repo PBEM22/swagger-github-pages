@@ -5,7 +5,7 @@ info:
   description: 배구 포지션 테스트 api명세서입니다.
   version: v1
 servers:
-- url: https://nvp.kr
+- url: https://api.nvp.kr
   description: Generated server url
 tags:
 - name: 질문지 컨트롤러
@@ -338,6 +338,41 @@ paths:
             "*/*":
               schema:
                 "$ref": "#/components/schemas/ApiResponseListGuestBookRes"
+    delete:
+      tags:
+      - 관리자 컨트롤러
+      summary: 방명록 일괄 삭제
+      description: 방명록을 일괄삭제하는 기능입니다.
+      operationId: deleteGuestBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteGuestBooksReq"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/ApiResponseObject"
+  "/v1/admins/env":
+    get:
+      tags:
+      - 관리자 컨트롤러
+      summary: 배포 버전 확인
+      description: 배포 버전 확인 (블루, 그린)
+      operationId: getEnv
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
   "/v1/questbooks/{guestBookId}":
     delete:
       tags:
@@ -785,3 +820,11 @@ components:
             SETTER: 25
             CENTER: 50
             LIBERO: 0
+    DeleteGuestBooksReq:
+      type: object
+      properties:
+        guestBookIds:
+          type: array
+          items:
+            type: integer
+            format: int64
